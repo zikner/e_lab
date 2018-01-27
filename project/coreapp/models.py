@@ -1,11 +1,18 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+
+
 # Create your models here.
+
 
 class Insurance(models.Model):
 	""" Records Insurance companies that the hospital supports/allows transactions with."""
 
 	name = models.CharField(max_length=100)
+
+	class Meta:
+		verbose_name_plural = 'insurance'
+
 
 class LabTest(models.Model):
 	""" Records lab tests that can be conducted """
@@ -16,6 +23,9 @@ class Laboratory(models.Model):
 	""" Records laboratory names where lab test requests can be sent to """		
 
 	name = models.CharField(max_length=100)
+
+	class Meta:
+		verbose_name_plural = 'laboratories'
 
 class Specimen(models.Model):
 	""" Records specimen that accompany lab test requests """
@@ -29,37 +39,40 @@ class Patient(models.Model):
 	last_name = models.CharField(max_length=35)
 	middle_name = models.CharField(max_length=35)
 	email = models.EmailField()
-	mobile = models.PhoneNumberField()
+	mobile = PhoneNumberField()
 	date_of_birth = models.DateField()
-	insurance_id = models.IntegerField()
+	member_id = models.IntegerField()
 
-	insurance = models.ForeignKey(Insurance, blank=True)
+	insurance = models.ForeignKey(Insurance, models.SET_NULL, null=True)
 
 class LabRequest(models.Model):
 	""" Records of lab requests made """
 
-	 lab_test = models.ForeignKey(LabTest)
-	 patient = models.ForeignKey(Patient)
-	 date = models.DateTimeField(auto_now=True)
-	 lab = models.ForeignKey(Laboratory, blank=True)
-	 test_duration = models.TimeField()
+	lab_test = models.ForeignKey(LabTest, models.PROTECT)
+	patient = models.ForeignKey(Patient, models.PROTECT)
+	date = models.DateTimeField(auto_now=True)
+	lab = models.ForeignKey(Laboratory, models.SET_NULL,null=True)
+	test_duration = models.TimeField()
 
 class LabResult(models.Model):
 	""" Records Lab results - not viewed yet and updated by a doctor """
 
-	lab_request = models.ForeignKey(LabRequest) # the test conducted
+	lab_request = models.ForeignKey(LabRequest, models.PROTECT) # the test conducted
 	diagnosis = models.TextField(null=False, blank=False)
 	date = models.DateField(auto_now_add=True) # date when the result was recorded
-	lab = model.CharField(max_length=100)
+	lab = models.CharField(max_length=100)
 
 class LabResultUpdated(models.Model):
 	""" Records viewed and updated lab results, by the doctor """
 
-	lab_request = models.ForeignKey(LabRequest)
+	lab_request = models.ForeignKey(LabRequest, models.PROTECT)
 	diagnosis = models.TextField(null=False, blank=False)
 	visit_type = models.CharField(max_length=15)
 	date = models.DateField(auto_now_add=True)
-	lab = model.CharField(max_length=100)
+	lab = models.CharField(max_length=100)
+
+	class Meta:
+		verbose_name_plural = 'lab results updated'
 
 
 
