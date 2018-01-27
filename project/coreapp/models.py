@@ -10,6 +10,9 @@ class Insurance(models.Model):
 
 	name = models.CharField(max_length=100)
 
+	def __str__(self):
+		return self.name
+
 	class Meta:
 		verbose_name_plural = 'insurance'
 
@@ -19,6 +22,9 @@ class LabTest(models.Model):
 
 	name = models.CharField(max_length=100)
 
+	def __str__(self):
+		return self.name
+
 class Laboratory(models.Model):
 	""" Records laboratory names where lab test requests can be sent to """		
 
@@ -27,10 +33,16 @@ class Laboratory(models.Model):
 	class Meta:
 		verbose_name_plural = 'laboratories'
 
+	def __str__(self):
+		return self.name	
+
 class Specimen(models.Model):
 	""" Records specimen that accompany lab test requests """
 
 	name = models.CharField(max_length=100)	
+
+	def __str__(self):
+		return self.name
 
 class Patient(models.Model):
 	""" Patient details"""
@@ -45,6 +57,9 @@ class Patient(models.Model):
 
 	insurance = models.ForeignKey(Insurance, models.SET_NULL, null=True)
 
+	def __str__(self):
+		return self.middle_name
+
 class LabRequest(models.Model):
 	""" Records of lab requests made """
 
@@ -54,13 +69,19 @@ class LabRequest(models.Model):
 	lab = models.ForeignKey(Laboratory, models.SET_NULL,null=True)
 	test_duration = models.TimeField()
 
+	def __str__(self):
+		return "{} request for patient by name {} {}".format(self.lab_test, self.patient.first_name, self.patient.middle_name)   
+
 class LabResult(models.Model):
 	""" Records Lab results - not viewed yet and updated by a doctor """
 
 	lab_request = models.ForeignKey(LabRequest, models.PROTECT) # the test conducted
 	diagnosis = models.TextField(null=False, blank=False)
 	date = models.DateField(auto_now_add=True) # date when the result was recorded
-	lab = models.CharField(max_length=100)
+	lab = models.ForeignKey(Laboratory, models.SET_NULL, null=True)
+
+	def __str__(self):
+		return '[possible diagnosis]: ' + self.diagnosis
 
 class LabResultUpdated(models.Model):
 	""" Records viewed and updated lab results, by the doctor """
@@ -75,4 +96,5 @@ class LabResultUpdated(models.Model):
 		verbose_name_plural = 'lab results updated'
 
 
-
+	def __str__(self):
+		return 'diagnosis: ' + self.diagnosis	
