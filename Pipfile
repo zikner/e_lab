@@ -13,6 +13,7 @@ name = "pypi"
 
 django = "*"
 "psycopg2" = "*"
+django-phonenumber-field = "*"
 
 
 [requires]
