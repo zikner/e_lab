@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-from .forms import PatientSearchForm
+from .forms import PatientSearchForm, PatientRegistrationForm
 from . import models
 # Create your views here.
 
@@ -35,5 +35,24 @@ class SearchPatient(View):
 		
 		else:
 			return render(request, 'coreapp/patient_search_form.html', {'form': form})
+
+
+
+class PatientRegistration(View):
+
+	def get(self, request):
+
+		form = PatientRegistrationForm()
+		
+		return render(request, 'coreapp/patient_registration_form.html', {'form': form})
+
+	# def post(self, request):
+		
+	# 	form = PatientRegistrationForm(self.POST)
+
+	# 	if form.is_valid():
+	# 		form.save()
+
+	# 		return redirect
 
 

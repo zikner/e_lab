@@ -7,3 +7,9 @@ class PatientSearchForm(ModelForm):
 		model = Patient
 		fields = ['first_name', 'mobile', 'member_id']
 
+
+class PatientRegistrationForm(ModelForm):
+
+	class Meta:
+		model = Patient
+		fields = '__all__'
