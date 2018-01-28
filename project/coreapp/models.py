@@ -47,15 +47,15 @@ class Specimen(models.Model):
 class Patient(models.Model):
 	""" Patient details"""
 
-	first_name = models.CharField(max_length=35)
+	first_name = models.CharField(max_length=35, verbose_name='first name')
 	last_name = models.CharField(max_length=35)
 	middle_name = models.CharField(max_length=35)
 	email = models.EmailField()
 	mobile = PhoneNumberField()
 	date_of_birth = models.DateField()
-	member_id = models.IntegerField()
+	member_id = models.IntegerField(verbose_name='insurance member id', blank=True)
 
-	insurance = models.ForeignKey(Insurance, models.SET_NULL, null=True)
+	insurance = models.ForeignKey(Insurance, models.SET_NULL, null=True, verbose_name='insurance company')
 
 	def __str__(self):
 		return self.middle_name
